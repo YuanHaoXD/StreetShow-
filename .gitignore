@@ -1,12 +1,59 @@
+# 环境
 .env
+.venv/
+venv/
+
+# 临时文件
 temp/
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.egg-info/
+
+# 前端构建
 frontend/.next/
 frontend/node_modules/
-*.egg-info/
-.venv/
-venv/
+frontend/tsconfig.tsbuildinfo
+
+# 系统文件
 .DS_Store
+.vscode/
+.claude/
+
+# 测试用图片（服装/人物）
+cloth.jpg
+cloth2.png
+cloth3.png
+cloth4.png
+cloth5.png
+pant.jpg
+xizhuang.jpg
+cankao.png
+model.jpg
+model2.png
+model3.png
+
+# 输出目录
+output/
+gemini_out/
+gemini_out1/
+
+# 模型权重
+Qwen/
+
+# 测试脚本
+test.py
+test.ipynb
+qwen_chat.py
+
+# 中文文档（内部）
+项目验收报告.md
+项目验收报告(参考2).pdf
+项目运行逻辑.md
+api使用.md
+StreetShow大创项目申报书.docx
+
+# 杂项
+docs/
+EAIprojecttryonprojectqwen-vlfrontendlib/

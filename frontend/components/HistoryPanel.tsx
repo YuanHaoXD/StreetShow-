@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { useLang } from "./LangProvider";
 
 const STORAGE_KEY = "streetshow_history";
 const MAX_RECORDS = 8; // 每条含 base64 图片约 300KB，8 条 ≈ 2.4MB，留足 localStorage 余量
@@ -58,11 +59,11 @@ function formatTime(ts: number): string {
   return `${d.getMonth() + 1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-const MODE_LABELS: Record<string, string> = {
-  lookbook: "Lookbook",
-  pose: "Pose Lab",
-  multi: "Multi-Fit",
-  basic: "标准试衣",
+const MODE_LABEL_KEYS: Record<string, "modeLookbookLabel" | "modePoseLabel" | "modeMultiLabel" | "modeBasicLabel"> = {
+  lookbook: "modeLookbookLabel",
+  pose: "modePoseLabel",
+  multi: "modeMultiLabel",
+  basic: "modeBasicLabel",
 };
 
 type Props = {
@@ -74,6 +75,7 @@ type Props = {
 export default function HistoryPanel({ open, onClose, onRestore }: Props) {
   const [records, setRecords] = useState<HistoryRecord[]>([]);
   const [mounted, setMounted] = useState(false);
+  const { t } = useLang();
 
   useEffect(() => {
     setMounted(true);
@@ -123,7 +125,7 @@ export default function HistoryPanel({ open, onClose, onRestore }: Props) {
                   History
                 </p>
                 <p className="mt-0.5 text-sm font-semibold text-white">
-                  生成记录
+                  {t("historyTitle")}
                 </p>
               </div>
               <div className="flex items-center gap-2">
@@ -133,7 +135,7 @@ export default function HistoryPanel({ open, onClose, onRestore }: Props) {
                     onClick={clearAll}
                     className="rounded-full border border-white/20 px-3 py-1 text-[11px] text-white/50 hover:border-red-400/40 hover:text-red-400"
                   >
-                    清空
+                    {t("historyClearAll")}
                   </button>
                 )}
                 <button
@@ -141,7 +143,7 @@ export default function HistoryPanel({ open, onClose, onRestore }: Props) {
                   onClick={onClose}
                   className="rounded-full border border-white/20 px-3 py-1 text-xs text-white/60 hover:text-white"
                 >
-                  关闭
+                  {t("historyClose")}
                 </button>
               </div>
             </div>
@@ -150,7 +152,7 @@ export default function HistoryPanel({ open, onClose, onRestore }: Props) {
             <div className="flex-1 overflow-y-auto p-4">
               {records.length === 0 ? (
                 <div className="flex h-full items-center justify-center text-white/30">
-                  <p className="text-sm">暂无历史记录</p>
+                  <p className="text-sm">{t("historyEmpty")}</p>
                 </div>
               ) : (
                 <div className="flex flex-col gap-3">
@@ -190,7 +192,7 @@ export default function HistoryPanel({ open, onClose, onRestore }: Props) {
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
                           <span className="rounded-full border border-[var(--acid-green)]/40 px-2 py-0.5 text-[10px] text-[var(--acid-green)]">
-                            {MODE_LABELS[rec.mode] ?? rec.mode}
+                            {MODE_LABEL_KEYS[rec.mode] ? t(MODE_LABEL_KEYS[rec.mode]) : rec.mode}
                           </span>
                           <span className="text-[10px] text-white/40">
                             {formatTime(rec.timestamp)}
@@ -202,7 +204,7 @@ export default function HistoryPanel({ open, onClose, onRestore }: Props) {
                           </p>
                         )}
                         <p className="mt-1 text-[10px] text-white/30">
-                          点击查看
+                          {t("historyTapView")}
                         </p>
                       </div>
                     </button>

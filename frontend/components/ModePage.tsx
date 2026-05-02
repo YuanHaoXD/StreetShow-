@@ -9,6 +9,8 @@ import HistoryPanel, {
   saveHistoryRecord,
 } from "./HistoryPanel";
 import ImageUploader from "./ImageUploader";
+import { useLang } from "./LangProvider";
+import type { TranslationKey } from "../lib/i18n";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 const POLL_INTERVAL_MS = 2500;
@@ -47,10 +49,10 @@ type ModeOption = {
 };
 
 const MODE_OPTIONS: ModeOption[] = [
-  { id: "basic", label: "标准试衣", desc: "单张稳定换衣", href: "/basic" },
-  { id: "lookbook", label: "Lookbook", desc: "多场景风格展示", href: "/lookbook" },
-  { id: "pose", label: "Pose Lab", desc: "根据服装推荐动作", href: "/pose" },
-  { id: "multi", label: "Multi-Fit", desc: "多物件同时上身", href: "/multi" },
+  { id: "basic", label: "modeBasicLabel", desc: "modeBasicDesc", href: "/basic" },
+  { id: "lookbook", label: "modeLookbookLabel", desc: "modeLookbookDesc", href: "/lookbook" },
+  { id: "pose", label: "modePoseLabel", desc: "modePoseDesc", href: "/pose" },
+  { id: "multi", label: "modeMultiLabel", desc: "modeMultiDesc", href: "/multi" },
 ];
 
 function useTypewriter(text: string, speed = 18) {
@@ -155,6 +157,7 @@ export default function ModePage({
   const pollTimerRef = useRef<number | null>(null);
   const jobStartRef = useRef<number | null>(null);
 
+  const { t, toggle } = useLang();
   const useAdvanced = defaultMode !== "basic";
   const mode = defaultMode === "basic" ? "lookbook" : defaultMode;
 
@@ -376,10 +379,10 @@ export default function ModePage({
 
     // Advanced 模式：结构化分块卡片
     const ADVICE_LABELS: Record<string, string> = {
-      person: "👤 人物特征",
-      garment: "👕 衣物分析",
-      styling: "✨ 搭配建议",
-      quality: "📸 品质约束",
+      person: t("advicePerson"),
+      garment: t("adviceGarment"),
+      styling: t("adviceStyling"),
+      quality: t("adviceQuality"),
     };
 
     return (
@@ -388,7 +391,7 @@ export default function ModePage({
         {styleDNA && styleDNA.vibe && (
           <div className="rounded-2xl border border-[var(--neon-cyan)]/30 bg-[var(--neon-cyan)]/5 p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[var(--neon-cyan)]">
-              🧬 风格 DNA
+              {t("styleDnaTitle")}
             </p>
             <p className="mt-2 text-sm text-white/90">{styleDNA.vibe}</p>
             {styleDNA.style_keywords && styleDNA.style_keywords.length > 0 && (
@@ -405,7 +408,7 @@ export default function ModePage({
             )}
             {styleDNA.occasions && styleDNA.occasions.length > 0 && (
               <p className="mt-2 text-[11px] text-white/50">
-                适合：{styleDNA.occasions.join(" / ")}
+                {t("fitsLabel")}{styleDNA.occasions.join(" / ")}
               </p>
             )}
           </div>
@@ -453,7 +456,7 @@ export default function ModePage({
               >
                 <div className="flex flex-col items-center gap-3 text-white/60">
                   <span className="h-10 w-10 animate-spin rounded-full border-2 border-white/20 border-t-[var(--acid-green)]" />
-                  <span className="text-xs">生成中...</span>
+                  <span className="text-xs">{t("generating")}</span>
                 </div>
               </div>
             ))}
@@ -473,7 +476,7 @@ export default function ModePage({
                     setResults((prev) => prev.filter((r) => r.variant_id !== item.variant_id))
                   }
                   className="absolute right-2 top-2 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-white/50 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-500/80 hover:text-white"
-                  title="删除此卡片"
+                  title={t("dismiss")}
                 >
                   ✕
                 </button>
@@ -496,7 +499,7 @@ export default function ModePage({
                     <div className="flex h-60 items-center justify-center rounded-2xl border border-white/10 md:h-72">
                       <div className="flex flex-col items-center gap-3 text-white/60">
                         <span className="h-10 w-10 animate-spin rounded-full border-2 border-white/20 border-t-[var(--acid-green)]" />
-                        <span className="text-xs">生成中...</span>
+                        <span className="text-xs">{t("generating")}</span>
                       </div>
                     </div>
                   )}
@@ -509,7 +512,7 @@ export default function ModePage({
                       {item.prompt_used}
                     </p>
                     <span className="mt-3 inline-flex rounded-full border border-white/20 px-3 py-1 text-[11px] text-white/60">
-                      点击查看详情
+                      {t("viewDetails")}
                     </span>
                   </div>
                 </button>
@@ -545,7 +548,7 @@ export default function ModePage({
           <div className="flex h-[520px] items-center justify-center text-white/50 md:h-[640px]">
             <div className="flex flex-col items-center gap-4">
               <span className="h-12 w-12 animate-spin rounded-full border-2 border-white/20 border-t-[var(--acid-green)]" />
-              <span className="text-sm">试衣图生成中...</span>
+              <span className="text-sm">{t("tryonGenerating")}</span>
             </div>
           </div>
         )}
@@ -575,20 +578,29 @@ export default function ModePage({
 
       <div className="relative mx-auto flex max-w-6xl flex-col gap-12">
         <header className="flex flex-col gap-4">
-          <p className="text-xs uppercase tracking-[0.4em] text-white/60">
-            StreetShow
-          </p>
+          <div className="flex items-center justify-between">
+            <p className="text-xs uppercase tracking-[0.4em] text-white/60">
+              StreetShow
+            </p>
+            <button
+              type="button"
+              onClick={toggle}
+              className="rounded-full border border-white/20 px-3 py-1 text-xs text-white/60 transition hover:border-[var(--acid-green)]/60 hover:text-[var(--acid-green)]"
+            >
+              {t("langToggle")}
+            </button>
+          </div>
           <h1 className="text-4xl font-semibold md:text-5xl">
             IGNITE YOUR FUTURE FIT
           </h1>
           <p className="max-w-3xl text-base text-white/70">
-            上传人物图与衣物图，生成时尚建议与试衣效果图。
+            {t("tagline")}
           </p>
         </header>
 
         <div className="grid gap-8 xl:grid-cols-[280px_1fr]">
           <aside className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
-            <p className="text-xs uppercase tracking-[0.3em] text-white/50">Modes</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-white/50">{t("modesTitle")}</p>
             <div className="mt-4 space-y-3">
               {MODE_OPTIONS.map((option) => (
                 <Link
@@ -601,8 +613,8 @@ export default function ModePage({
                       : "border-white/10 bg-black/40 hover:border-white/30",
                   ].join(" ")}
                 >
-                  <p className="text-sm font-semibold text-white">{option.label}</p>
-                  <p className="mt-1 text-xs text-white/60">{option.desc}</p>
+                  <p className="text-sm font-semibold text-white">{t(option.label as TranslationKey)}</p>
+                  <p className="mt-1 text-xs text-white/60">{t(option.desc as TranslationKey)}</p>
                 </Link>
               ))}
             </div>
@@ -624,12 +636,12 @@ export default function ModePage({
                 </label>
                 <div>
                   <p className="mb-2 text-[11px] uppercase tracking-[0.2em] text-white/40">
-                    用户偏好
+                    {t("styleHintTitle")}
                   </p>
                   <textarea
                     value={userPrompt}
                     onChange={(event) => setUserPrompt(event.target.value)}
-                    placeholder="更街头 / 更高级 / 夜景霓虹..."
+                    placeholder={t("styleHintPlaceholder")}
                     rows={3}
                     className="w-full rounded-md border border-white/20 bg-black/60 px-3 py-2 text-white placeholder:text-white/40"
                   />
@@ -640,7 +652,7 @@ export default function ModePage({
                     checked={showPlan}
                     onChange={(event) => setShowPlan(event.target.checked)}
                   />
-                  显示计划 JSON
+                  {t("showPlanJson")}
                 </label>
               </div>
             )}
@@ -653,7 +665,7 @@ export default function ModePage({
             >
               <span className="flex items-center gap-2">
                 <span>🕒</span>
-                <span>历史记录</span>
+                <span>{t("historyBtn")}</span>
               </span>
             </button>
           </aside>
@@ -661,13 +673,13 @@ export default function ModePage({
           <div className="flex flex-col gap-10">
             <section className="grid gap-6 md:grid-cols-2">
               <ImageUploader
-                label="Subject (你)"
-                hint="上传人物图"
+                label={t("subjectLabel")}
+                hint={t("subjectHint")}
                 onFile={setPersonFile}
               />
               <ImageUploader
-                label="Garment (衣物)"
-                hint="上传衣物图"
+                label={t("garmentLabel")}
+                hint={t("garmentHint")}
                 onFile={setGarmentFile}
               />
             </section>
@@ -686,7 +698,7 @@ export default function ModePage({
                 ].join(" ")}
               >
                 <span className="relative z-10">
-                  {loading ? "IGNITING..." : "IGNITE STYLE"}
+                  {loading ? t("igniting") : t("igniteStyle")}
                 </span>
                 {loading && (
                   <span className="loading-bar absolute inset-0" aria-hidden="true" />
@@ -700,7 +712,7 @@ export default function ModePage({
                     onClick={() => setError(null)}
                     className="rounded-full border border-red-400/40 px-2 py-1 text-[11px]"
                   >
-                    取消
+                    {t("dismiss")}
                   </button>
                 </div>
               )}
@@ -732,7 +744,7 @@ export default function ModePage({
 
                   <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
                     <p className="text-xs uppercase tracking-[0.3em] text-white/50">
-                      {useAdvanced ? "Lookbook Results" : "Try-on Result"}
+                      {useAdvanced ? t("lookbookResults") : t("tryonResult")}
                     </p>
                     <div className="mt-4">{renderResults()}</div>
                   </div>
@@ -766,7 +778,7 @@ export default function ModePage({
                 onClick={() => setActiveResult(null)}
                 className="rounded-full border border-white/20 px-3 py-1 text-xs text-white/70"
               >
-                关闭
+                {t("close")}
               </button>
             </div>
             <img
