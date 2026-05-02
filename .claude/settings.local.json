@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "WebFetch(domain:doc.dmxapi.cn)",
+      "WebSearch",
+      "WebFetch(domain:dmxapi.cn)",
+      "WebFetch(domain:dmxapi.com)",
+      "WebFetch(domain:www.alibabacloud.com)",
+      "WebFetch(domain:docs.nvidia.com)",
+      "WebFetch(domain:qwen.ai)",
+      "WebFetch(domain:docs.litellm.ai)",
+      "WebFetch(domain:macaron.im)",
+      "WebFetch(domain:wavespeed.ai)",
+      "WebFetch(domain:www.nxcode.io)",
+      "WebFetch(domain:models.dmxapi.cn)",
+      "WebFetch(domain:openrouter.ai)",
+      "WebFetch(domain:docs.vllm.ai)",
+      "Bash(python:*)",
+      "Bash(pip install:*)",
+      "Bash(.venv/Scripts/pip install:*)",
+      "Bash(where python:*)",
+      "Bash(F:/anaconda/python.exe -m pip install google-genai -q)",
+      "Bash(F:/anaconda/python.exe:*)",
+      "Bash(npx tsc:*)"
+    ]
+  }
+}

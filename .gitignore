@@ -1,0 +1,12 @@
+.env
+temp/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+frontend/.next/
+frontend/node_modules/
+*.egg-info/
+.venv/
+venv/
+.DS_Store
