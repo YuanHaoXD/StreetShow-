@@ -46,6 +46,8 @@ Qwen/
 test.py
 test.ipynb
 qwen_chat.py
+download.py
+gemini_draw.py
 
 # 中文文档（内部）
 项目验收报告.md

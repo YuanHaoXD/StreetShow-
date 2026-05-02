@@ -22,7 +22,9 @@
       "Bash(where python:*)",
       "Bash(F:/anaconda/python.exe -m pip install google-genai -q)",
       "Bash(F:/anaconda/python.exe:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "PowerShell(npm run *)",
+      "PowerShell(Copy-Item *)"
     ]
   }
 }
